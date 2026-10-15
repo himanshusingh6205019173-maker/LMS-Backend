@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Admin Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/dashboard.css">
+</head>
+<body>
+<aside class="sidebar">
+    <h2 class="logo">LMS</h2>
+    <nav>
+        <a href="#" class="nav-link active" data-section="overview">Overview</a>
+        <a href="#" class="nav-link" data-section="users">User Management</a>
+        <a href="#" class="nav-link" data-section="courses">Course Management</a>
+        <a href="#" class="nav-link" data-section="analytics">Performance Analytics</a>
+        <a href="#" class="nav-link" data-section="settings">System Settings</a>
+        <a href="#" class="nav-link" data-section="activity">System Activity</a>
+    </nav>
+</aside>
+
+<div class="main">
+    <header class="topbar">
+        <h1>Admin Dashboard</h1>
+        <div class="user-area">
+            <span id="welcome">Welcome, Admin</span>
+            <button onclick="logout()">Logout</button>
+        </div>
+    </header>
+
+    <main class="content">
+        <section id="overview" class="panel active">
+            <p id="overviewMessage" class="message error"></p>
+            <div class="cards">
+                <div class="card">
+                    <p>Total Users</p>
+                    <h3 id="totalUsers">0</h3>
+                </div>
+                <div class="card">
+                    <p>Total Courses</p>
+                    <h3 id="totalCourses">0</h3>
+                </div>
+                <div class="card">
+                    <p>Total Enrollments</p>
+                    <h3 id="totalEnrollments">0</h3>
+                </div>
+                <div class="card">
+                    <p>Instructors</p>
+                    <h3 id="totalInstructors">0</h3>
+                </div>
+            </div>
+        </section>
+
+        <section id="users" class="panel">
+            <div class="panel-head">
+                <h2>User Management</h2>
+                <button id="addUserBtn">+ Add User</button>
+            </div>
+            <p id="userMessage" class="message"></p>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody id="usersTableBody"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="courses" class="panel">
+            <div class="panel-head">
+                <h2>Course Management</h2>
+                <button id="addCourseBtn">+ Add Course</button>
+            </div>
+            <p id="courseMessage" class="message"></p>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Description</th>
+                        <th>Syllabus</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody id="coursesTableBody"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="analytics" class="panel">
+            <h2>Performance Analytics</h2>
+            <p id="analyticsMessage" class="message error"></p>
+
+            <div class="charts">
+                <div class="chart-card">
+                    <h4>Enrollments per Course</h4>
+                    <div class="chart-box"><canvas id="enrollmentChart"></canvas></div>
+                </div>
+                <div class="chart-card">
+                    <h4>Completion Rate and Average Grade</h4>
+                    <div class="chart-box"><canvas id="performanceChart"></canvas></div>
+                </div>
+            </div>
+
+            <h3 class="sub-title">Student Performance</h3>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Student</th>
+                        <th>Course</th>
+                        <th>Progress</th>
+                        <th>Grade</th>
+                    </tr>
+                    </thead>
+                    <tbody id="studentStatsBody"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="settings" class="panel">
+            <h2>System Settings</h2>
+            <p id="settingsMessage" class="message"></p>
+
+            <form id="settingsForm" class="settings-card">
+                <label for="siteName">Site Name</label>
+                <input type="text" id="siteName" required>
+
+                <label for="supportEmail">Support Email</label>
+                <input type="email" id="supportEmail" required>
+
+                <label class="check-row">
+                    <input type="checkbox" id="allowRegistration">
+                    <span>Allow new user registration</span>
+                </label>
+
+                <label class="check-row">
+                    <input type="checkbox" id="maintenanceMode">
+                    <span>Maintenance mode</span>
+                </label>
+
+                <button type="submit">Save Settings</button>
+            </form>
+        </section>
+
+        <section id="activity" class="panel">
+            <div class="panel-head">
+                <h2>System Activity</h2>
+                <span class="live-tag">Live</span>
+            </div>
+            <p id="activityMessage" class="message error"></p>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Time</th>
+                        <th>User</th>
+                        <th>Action</th>
+                    </tr>
+                    </thead>
+                    <tbody id="activityBody"></tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+</div>
+<div id="userModal" class="modal">
+    <div class="modal-box">
+        <h3 id="modalTitle">Add User</h3>
+        <p id="modalError" class="message error"></p>
+        <form id="userForm">
+            <input type="hidden" id="userId">
+
+            <label for="userName">Name</label>
+            <input type="text" id="userName" required>
+
+            <label for="userEmail">Email</label>
+            <input type="email" id="userEmail" required>
+
+            <label for="userPassword">Password</label>
+            <input type="password" id="userPassword">
+
+            <label for="userRole">Role</label>
+            <select id="userRole" required>
+                <option value="ADMIN">Admin</option>
+                <option value="INSTRUCTOR">Instructor</option>
+                <option value="STUDENT" selected>Student</option>
+            </select>
+
+            <div class="modal-actions">
+                <button type="button" id="cancelModal" class="btn-cancel">Cancel</button>
+                <button type="submit">Save</button>
+            </div>
+        </form>
+    </div>
+</div>
+<div id="courseModal" class="modal">
+    <div class="modal-box">
+        <h3 id="courseModalTitle">Add Course</h3>
+        <p id="courseModalError" class="message error"></p>
+        <form id="courseForm">
+            <input type="hidden" id="courseId">
+
+            <label for="courseTitle">Title</label>
+            <input type="text" id="courseTitle" required>
+
+            <label for="courseDescription">Description</label>
+            <textarea id="courseDescription" rows="3" required></textarea>
+
+            <label for="courseSyllabus">Syllabus</label>
+            <textarea id="courseSyllabus" rows="4" required></textarea>
+
+            <div class="modal-actions">
+                <button type="button" id="cancelCourseModal" class="btn-cancel">Cancel</button>
+                <button type="submit">Save</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="../js/api.js"></script>
+<script src="../js/guard.js"></script>
+<script src="../js/admin.js"></script>
+<script>requireRole("ADMIN");</script>
+</body>
+</html>
